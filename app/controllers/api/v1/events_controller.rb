@@ -19,6 +19,22 @@ class Api::V1::EventsController < ApiController
     end
   end
 
+  def update
+    authorize do |user|
+      @user = user
+      @event = Event.find(params[:id])
+
+      if @event.update_attributes(event_params)
+        render
+      else
+        render json: {
+          message: 'Validation Failed',
+          errors: @event.errors.full_messages
+        }, status: 422
+      end
+    end
+  end
+
   private
 
   def event_params
